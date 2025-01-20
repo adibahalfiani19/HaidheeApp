@@ -159,7 +159,7 @@
                         <div class="dropdown-header">{{ Auth::user()->name }}</div>
                         <div class="dropdown-subheader">{{ Auth::user()->email }}</div>
                         <div class="divider"></div>
-                        <a href="/account">Profil</a>
+                        <a href="{{ route('profile.index')}}">Profil</a>
                         <form action="{{ route('logout') }}" method="POST" class="block">
                             @csrf
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Keluar</button>
@@ -219,7 +219,7 @@
                     <p class="text-sm text-gray-600">{{ Auth::user()->email }}</p>
                 </div>
             </div>
-            <a href="/account" class="block text-center text-[#5F7E78] border border-[#5F7E78] px-4 py-2 rounded-xl hover:bg-teal-50 mb-4">Profil</a>
+            <a href="{{ route('profile.index')}}" class="block text-center text-[#5F7E78] border border-[#5F7E78] px-4 py-2 rounded-xl hover:bg-teal-50 mb-4">Profil</a>
 
             <!-- Logout Button -->
             <form action="{{ route('logout') }}" method="POST">
@@ -234,134 +234,143 @@
 <div class="container mx-auto p-6 bg-white rounded-lg shadow-md md:px-14 mt-14">
     <h2 class="text-2xl font-bold mb-4 text-[#5F7E78]">Profil Saya</h2>
 
+    @if (session('success'))
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <!-- Informasi Pengguna -->
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Nama Lengkap:</label>
-        <input type="text" id="name" name="name" value="{{ Auth::user()->name ?? ''}}" 
-               placeholder="Nama tidak boleh kosong" 
-               class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
-    </div>
+    <form action="{{ route('profile.update') }}" method="POST">
+        @csrf
+        @method('PUT')
 
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Email:</label>
-        <input type="email" id="email" value="{{ Auth::user()->email }}" disabled
-               class="w-full p-3 border rounded-xl bg-gray-200 cursor-not-allowed">
-    </div>
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-bold mb-2">Nama Lengkap:</label>
+            <input type="text" name="name" id="name" value="{{ $user->name }}" required
+                   placeholder="Nama tidak boleh kosong" 
+                   class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
+        </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Tanggal Bergabung:</label>
-        <input type="text" value="{{ Auth::user()->created_at->format('d M Y') }}" disabled
-               class="w-full p-3 border rounded-xl bg-gray-200 cursor-not-allowed">
-    </div>
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+            <input type="email" id="email" value="{{ $user->email }}" disabled
+                   class="w-full p-3 border rounded-xl bg-gray-200 cursor-not-allowed">
+        </div>
 
-    <!-- Ganti Kata Sandi -->
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Ganti Kata Sandi:</label>
-        <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengganti kata sandi"
-               class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
-    </div>
+        <div class="mb-4">
+            <label for="created_at" class="block text-gray-700 font-bold mb-2">Tanggal Bergabung:</label>
+            <input type="text" id="created_at" value="{{ $user->created_at->format('d M Y') }}" disabled
+                   class="w-full p-3 border rounded-xl bg-gray-200 cursor-not-allowed">
+        </div>    
 
-    <!-- Tombol Simpan Perubahan -->
-    <div class="flex gap-4">
-        <button id="saveChanges" class="bg-[#5F7E78] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[#4e6863] transition duration-300">
-            Simpan Perubahan
-        </button>
-        <button id="deleteAccount" class="bg-red-500 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-600 transition duration-300">
+        <div class="mb-4">
+            <label for="passwordChange" class="block text-gray-700 font-bold mb-2">Ganti Kata Sandi:</label>
+            <div class="relative">
+                <input type="password" name="passwordChange" id="passwordChange" placeholder="Kosongkan jika tidak ingin mengganti kata sandi"
+                    class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
+                <button type="button" id="togglePasswords" class="absolute right-3 top-3 text-gray-500 focus:outline-none">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+            </div>
+            <!-- Password Requirements -->
+            <div id="passwordRequirement" class="hidden mt-2 text-sm text-gray-500">
+                <div id="panjang" class="flex items-center">
+                    <span class="icon text-red-500 mr-2">○</span>
+                    <span class="text">6 characters</span>
+                </div>
+                <div id="hurufBesar" class="flex items-center">
+                    <span class="icon text-red-500 mr-2">○</span>
+                    <span class="text">1 uppercase</span>
+                </div>
+                <div id="angka" class="flex items-center">
+                    <span class="icon text-red-500 mr-2">○</span>
+                    <span class="text">1 number</span>
+                </div>
+            </div>  
+        </div>         
+
+        <!-- Tombol Simpan Perubahan -->
+        <div class="flex gap-4">
+            <button id="saveChanges" class="bg-[#5F7E78] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[#4e6863] transition duration-300">
+                Simpan Perubahan
+            </button>
+        </div>
+    </form>
+
+    <!-- Tombol Hapus Akun -->
+    <form action="{{ route('profile.destroy') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Anda? Semua data akan hilang secara permanen.')">
+        @csrf
+        @method('DELETE')
+        <button type="submit"
+                class="bg-red-500 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-700 mt-4">
             Hapus Akun
         </button>
-    </div>
+    </form>
 </div>
 
 <script>
-    document.getElementById('saveChanges').addEventListener('click', function () {
-        // Ambil nilai input dari form
-        const name = document.getElementById('name').value.trim();
-        const password = document.getElementById('password').value.trim();
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("passwordChange");
+        const requirements = document.getElementById("passwordRequirement");
+        const minLength = document.getElementById("panjang");
+        const uppercase = document.getElementById("hurufBesar");
+        const number = document.getElementById("angka");
 
-        // Debug data yang akan dikirim
-        console.log('Data yang akan dikirim ke server:', { name, password });
+        // Tampilkan password requirements saat input difokuskan
+        passwordInput.addEventListener("focus", function () {
+            requirements.classList.remove("hidden");
+        });
 
-        // Kirim data ke server menggunakan fetch API
-        fetch('/profile/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({ name, password }), // Kirim data dalam format JSON
-        })
-            .then((response) => response.json()) // Parsing response JSON
-            .then((data) => {
-                // Debug respon server
-                console.log('Response dari server:', data);
+        // Sembunyikan password requirements saat input kehilangan fokus
+        passwordInput.addEventListener("blur", function () {
+            if (passwordInput.value === "") {
+                requirements.classList.add("hidden");
+            }
+        });
 
-                if (data.success) {
-                    alert(data.message); // Tampilkan pesan sukses
-                    location.reload(); // Reload halaman setelah berhasil
-                } else {
-                    alert(data.message || 'Terjadi kesalahan. Tidak ada perubahan yang disimpan.');
-                }
-            })
-            .catch((error) => {
-                // Debug error jika ada masalah jaringan
-                console.error('Error jaringan:', error);
-                alert('Terjadi kesalahan jaringan. Coba lagi.');
-            });
+        // Validasi password secara real-time
+        passwordInput.addEventListener("input", function () {
+            const value = passwordInput.value;
+
+            // Validasi dan perbarui indikator
+            updateIndicator(minLength, value.length >= 6);
+            updateIndicator(uppercase, /[A-Z]/.test(value));
+            updateIndicator(number, /\d/.test(value));
+        });
+
+        // Fungsi untuk memperbarui indikator
+        function updateIndicator(element, isValid) {
+            const icon = element.querySelector("span.icon");
+            const text = element.querySelector("span.text");
+            if (isValid) {
+                icon.textContent = "✓"; // Centang jika valid
+                icon.classList.remove("text-red-500");
+                icon.classList.add("text-green-500");
+            } else {
+                icon.textContent = "○"; // Bulat jika tidak valid
+                icon.classList.remove("text-green-500");
+                icon.classList.add("text-red-500");
+            }
+        }
     });
+</script>
 
-    // document.getElementById('saveChanges').addEventListener('click', function () {
-    //     const name = document.getElementById('name').value.trim();
-    //     const password = document.getElementById('password').value.trim();
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Login Password Show/Hide Toggle
+        const togglePassword = document.getElementById('togglePasswords');
+        const password = document.getElementById('passwordChange');
 
-    //     console.log('Nama:', name);
-    //     console.log('Password:', password);
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function () {
+                // Toggle between password and text type
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
 
-    //     console.log('Data yang dikirim:', { name, password }); // Debugging
-
-    //     fetch('/profile/update', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Token untuk keamanan
-    //         },
-    //         body: JSON.stringify({ name, password }) // Kirim data sebagai JSON
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log('Response dari server:', data); // Debugging
-
-    //         if (data.success) {
-    //             alert('Profil berhasil diperbarui!');
-    //             location.reload(); // Reload halaman jika berhasil
-    //         } else {
-    //             alert(data.message || 'Terjadi kesalahan. Coba lagi.');
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error jaringan:', error);
-    //         alert('Terjadi kesalahan jaringan. Coba lagi.');
-    //     });
-    // });
-
-
-
-    document.getElementById('deleteAccount').addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menghapus akun Anda? Data Anda tidak dapat dikembalikan.')) {
-            fetch('/profile/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Akun berhasil dihapus.');
-                    window.location.href = '/';
-                } else {
-                    alert('Terjadi kesalahan. Coba lagi.');
-                }
+                // Toggle icon class between eye and eye-slash
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
             });
         }
     });

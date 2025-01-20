@@ -290,7 +290,7 @@
                         <div class="dropdown-header">{{ Auth::user()->name }}</div>
                         <div class="dropdown-subheader">{{ Auth::user()->email }}</div>
                         <div class="divider"></div>
-                        <a href="{{ route('profile') }}">Profil</a>
+                        <a href="{{ route('profile.index')}}">Profil</a>
                         <form action="{{ route('logout') }}" method="POST" class="block">
                             @csrf
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Keluar</button>
@@ -339,7 +339,7 @@
                     <p class="text-sm text-gray-600">{{ Auth::user()->email }}</p>
                 </div>
             </div>
-            <a href="{{ route('profile') }}" class="block text-center text-[#5F7E78] border border-[#5F7E78] px-4 py-2 rounded-xl hover:bg-teal-50 mb-4">Profil</a>
+            <a href="{{ route('profile.index') }}" class="block text-center text-[#5F7E78] border border-[#5F7E78] px-4 py-2 rounded-xl hover:bg-teal-50 mb-4">Profil</a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="block w-full text-center bg-[#5F7E78] text-white px-4 py-2 rounded-xl hover:bg-[#4e6863]">Keluar</button>

@@ -80,9 +80,9 @@ Route::get('/panduan-qadha', [PanduanController::class, 'qadha'])->name('panduan
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-//Profile
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update']);
-    Route::post('/profile/delete', [ProfileController::class, 'delete']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index'); // Halaman profil
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Perbarui profil
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Hapus akun
 });

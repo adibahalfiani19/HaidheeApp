@@ -7,111 +7,70 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-
 class ProfileController extends Controller
 {
     public function index()
     {
-        return view('profile'); // Mengarahkan ke profile.blade.php
+        $user = Auth::user(); // Ambil data pengguna yang login
+        return view('profile.index', compact('user'));
     }
 
-    // public function update(Request $request)
-    // {
-    //     /** @var \App\Models\User $user */
-    //     $user = Auth::user();
-    //     if (!$user) {
-    //         return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.'], 404);
-    //     }
-    
-    //     $request->validate([
-    //         'name' => 'nullable|string|max:255', // Tidak lagi required
-    //         'password' => 'nullable|string|min:6',
-    //     ]);
-    
-    //     // if ($request->has('name') && !empty($request->name)) {
-    //     //     $user->name = $request->name;
-    //     // }
-    
-    //     // if ($request->has('password') && !empty($request->password)) {
-    //     //     $user->password = Hash::make($request->password);
-    //     // }
-
-    //     if ($request->filled('name')) {
-    //         $user->name = $request->name;
-    //     }
-
-    //     if ($request->filled('password')) {
-    //         $user->password = Hash::make($request->password);
-    //     }
-
-    //         // Simpan perubahan ke database
-    //     try {
-    //         $user->save(); // Simpan ke database
-    //         return response()->json(['success' => true, 'message' => 'Profil berhasil diperbarui.']);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['success' => false, 'message' => 'Gagal menyimpan perubahan.']);
-    //     }
-    // }
-
+    /**
+     * Perbarui data profil pengguna.
+     */
     public function update(Request $request)
     {
-        $user = Auth::user(); // Ambil data pengguna dari sesi
-        if (!$user) {
-            return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.'], 404);
-        }
-
-        if (!($user instanceof \App\Models\User)) {
-            return response()->json(['success' => false, 'message' => 'Autentikasi gagal. Model User tidak valid.']);
-        }
-    
+        
         // Validasi input
-        $validated = $request->validate([
-            'name' => 'nullable|string|max:255', // Nama opsional
-            'password' => 'nullable|string|min:6', // Password opsional
+        $request->validate([
+            'name' => 'required|string|max:255', // Validasi untuk nama
+            'password' => [
+                'nullable', // Password opsional
+                'string',
+                'min:6',
+                'regex:/[A-Z]/', // Harus ada huruf besar
+                'regex:/\d/' // Harus ada angka
+            ],
+        ], [
+            'password.regex' => 'Password harus mengandung setidaknya satu huruf besar dan satu angka.',
+            'password.min' => 'Password minimal harus memiliki 6 karakter.',
         ]);
-    
-        // Flag untuk mendeteksi perubahan
-        $isChanged = false;
-    
-        // Periksa apakah nama diubah
-        if (!empty($validated['name']) && $validated['name'] !== $user->name) {
-            $user->name = $validated['name'];
-            $isChanged = true; // Tandai bahwa ada perubahan
-        }
-    
-        // Periksa apakah password diubah
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-            $isChanged = true; // Tandai bahwa ada perubahan
-        }
-    
-        // Jika ada perubahan, simpan ke database
-        if ($isChanged) {
-            $user->save();
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Profil berhasil diperbarui.',
-            ]);
-        }
-    
-        // Jika tidak ada perubahan
-        return response()->json([
-            'success' => false,
-            'message' => 'Tidak ada perubahan yang disimpan.',
-        ]);
-    }
-    
-    public function delete()
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.'], 404);
-        }
 
+        // Ambil data pengguna yang sedang login
+        $user = Auth::user();
+
+        // Update nama
+        $user->name = $request->name;
+
+        // Update password jika diisi
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        
+        /** @var \App\Models\User $user */
+
+        $user->save(); // Simpan perubahan ke database
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $user = Auth::user(); // Ambil pengguna yang sedang login
+
+        // Logout pengguna sebelum menghapus akun
+        Auth::logout();
+
+        /** @var \App\Models\User $user */
+        // Hapus akun dari database
         $user->delete();
 
-        return response()->json(['success' => true]);
-    }
+        // Invalidate sesi pengguna
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Redirect ke halaman landing page dengan pesan sukses
+        return redirect('/')->with('success', 'Akun Anda berhasil dihapus.');
+    }  
+
 }
