@@ -37,9 +37,11 @@ class LoginController extends Controller
                 return redirect()->route('home');
             }
         }
-
-        // Jika login gagal, kembali ke halaman login dengan pesan error
-        return redirect()->back()->with('loginError', 'Email atau password salah');
+      
+        return back()
+            ->withInput()
+            ->with('modal', 'login') // Modal login tetap terbuka
+            ->with('alertMessage', 'Email atau password salah. Silakan coba lagi.');
     }
 
     public function logout(Request $request)

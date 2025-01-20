@@ -18,15 +18,21 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        //Validasi input dari pengguna
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:5',
-            // 'whatsapp_number' => 'required|string|max:20',
-        ]);
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'regex:/[A-Z]/', // Harus ada huruf besar
+                'regex:/\d/' // Harus ada angka
+            ],
+        ], [
+            'password.regex' => 'Passwordmu harus mengandung huruf besar dan angka.',
+            'password.min' => 'Password minimal harus memiliki 6 karakter.',
+        ]);    
         
-
         // Buat pengguna baru di database
         $user = User::create([
             'name' => $request->name,
@@ -39,7 +45,9 @@ class RegisterController extends Controller
         // Event pendaftaran berhasil
         event(new Registered($user));
 
-        // Redirect ke landing dengan login modal terbuka
-        return redirect('/')->with('registrationSuccess', true);
+        // Redirect ke landing page dengan modal login terbuka
+        return redirect('/')
+            ->with('registrationSuccess', true)
+            ->with('alertMessage', 'Registrasi berhasil! Silakan login.');
     }
 }

@@ -16,7 +16,8 @@
             @csrf
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 font-bold mb-2">Email</label>
-                <input type="email" name="email" id="email" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Email Anda">
+                <input type="email" name="email" id="email" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Email Anda" 
+                value="{{ old('email') }}">
             </div>
             <div class="mb-4">
                 <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
@@ -44,8 +45,17 @@
             </button>
         </form>
         
-        
         <!-- Link ke Modal Register -->
         <p class="text-center text-gray-600 mt-6">Belum punya akun? <a href="#" id="showRegisterModalFromLogin" class="text-[#5F7E78] font-semibold hover:underline">Daftar Sekarang</a></p>
     </div>
 </div>
+
+@if (session('modal') === 'login')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            alert("{{ session('alertMessage') }}");
+            document.getElementById('loginModal').classList.remove('hidden'); // Buka modal login
+            document.getElementById('registerModal').classList.add('hidden'); // Tutup modal register
+        });
+    </script>
+@endif

@@ -16,11 +16,11 @@
             @csrf
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 font-bold mb-2">Nama Lengkap</label>
-                <input type="text" name="name" id="name" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Nama Lengkap Anda">
+                <input type="text" name="name" id="name" required value="{{ old('name') }}" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Nama Lengkap Anda">
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 font-bold mb-2">Email</label>
-                <input type="email" name="email" id="email" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Email Anda">
+                <input type="email" name="email" id="email" required value="{{ old('email') }}" required class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]" placeholder="Masukkan Email Anda">
             </div>
             <div class="mb-8">
                 <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
@@ -29,7 +29,22 @@
                     <button type="button" id="toggleRegisterPassword" class="absolute right-3 top-3 text-gray-500 focus:outline-none">
                         <i class="fas fa-eye-slash"></i>
                     </button>
-                </div>
+                </div>     
+                <!-- Password Requirements -->
+                <div id="passwordRequirements" class="hidden mt-2 text-sm text-gray-500">
+                    <div id="minLength" class="flex items-center">
+                        <span class="icon text-red-500 mr-2">○</span>
+                        <span class="text">6 characters</span>
+                    </div>
+                    <div id="uppercase" class="flex items-center">
+                        <span class="icon text-red-500 mr-2">○</span>
+                        <span class="text">1 uppercase</span>
+                    </div>
+                    <div id="number" class="flex items-center">
+                        <span class="icon text-red-500 mr-2">○</span>
+                        <span class="text">1 number</span>
+                    </div>
+                </div>                     
             </div>                        
             
             {{-- <div class="mb-4">
@@ -57,6 +72,74 @@
         <p class="text-center text-gray-600 mt-6">Sudah punya akun? <a href="#" id="showLoginModalFromRegister" class="text-[#5F7E78] font-semibold hover:underline">Masuk Sekarang</a></p>
     </div>
 </div>
+
+@if (session('registrationSuccess'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            alert("{{ session('alertMessage') }}");
+            document.getElementById('loginModal').classList.remove('hidden'); // Buka modal login
+            document.getElementById('registerModal').classList.add('hidden'); // Tutup modal register
+        });
+    </script>
+@endif
+
+@if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            alert("{{ $errors->first() }}");
+            document.getElementById('registerModal').classList.remove('hidden'); // Buka modal login
+            document.getElementById('loginModal').classList.add('hidden'); // Tutup modal register
+        });
+    </script>
+@endif
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById("registerPassword");
+    const requirements = document.getElementById("passwordRequirements");
+    const minLength = document.getElementById("minLength");
+    const uppercase = document.getElementById("uppercase");
+    const number = document.getElementById("number");
+
+    // Tampilkan password requirements saat input difokuskan
+    passwordInput.addEventListener("focus", function () {
+        requirements.classList.remove("hidden");
+    });
+
+    // Sembunyikan password requirements saat input kehilangan fokus
+    passwordInput.addEventListener("blur", function () {
+        if (passwordInput.value === "") {
+            requirements.classList.add("hidden");
+        }
+    });
+
+    // Validasi password secara real-time
+    passwordInput.addEventListener("input", function () {
+        const value = passwordInput.value;
+
+        // Validasi dan perbarui indikator
+        updateIndicator(minLength, value.length >= 6);
+        updateIndicator(uppercase, /[A-Z]/.test(value));
+        updateIndicator(number, /\d/.test(value));
+    });
+
+    // Fungsi untuk memperbarui indikator
+    function updateIndicator(element, isValid) {
+        const icon = element.querySelector("span.icon");
+        const text = element.querySelector("span.text");
+        if (isValid) {
+            icon.textContent = "✓"; // Centang jika valid
+            icon.classList.remove("text-red-500");
+            icon.classList.add("text-green-500");
+        } else {
+            icon.textContent = "○"; // Bulat jika tidak valid
+            icon.classList.remove("text-green-500");
+            icon.classList.add("text-red-500");
+        }
+    }
+});
+
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
