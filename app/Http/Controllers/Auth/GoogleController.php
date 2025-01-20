@@ -33,7 +33,7 @@ class GoogleController extends Controller
                 $user = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
-                    'password' => bcrypt('default-password'), // Password default
+                    'password' => bcrypt(uniqid()),
                     'role' => 'user', // Role default
                 ]);
             }
