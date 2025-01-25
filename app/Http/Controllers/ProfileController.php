@@ -31,9 +31,12 @@ class ProfileController extends Controller
                 'regex:/[A-Z]/', // Harus ada huruf besar
                 'regex:/\d/' // Harus ada angka
             ],
+            'whatsapp_number' => 'nullable|numeric|digits_between:10,15',
         ], [
             'password.regex' => 'Password harus mengandung setidaknya satu huruf besar dan satu angka.',
             'password.min' => 'Password minimal harus memiliki 6 karakter.',
+            'whatsapp_number.numeric' => 'Nomor WhatsApp harus berupa angka.',
+            'whatsapp_number.digits_between' => 'Nomor WhatsApp harus antara 10 hingga 15 digit.',
         ]);
 
         // Ambil data pengguna yang sedang login
@@ -46,12 +49,19 @@ class ProfileController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
+
+        // Update nomor WhatsApp jika diisi
+        if ($request->filled('whatsapp_number')) {
+            $user->whatsapp_number = $request->whatsapp_number;
+        } else {
+            $user->whatsapp_number = null; // Jika kosong, set ke null
+        }
         
         /** @var \App\Models\User $user */
 
         $user->save(); // Simpan perubahan ke database
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
+        return back()->with('changeSuccess', 'Profil berhasil diperbarui.');
     }
 
     public function destroy(Request $request)

@@ -105,9 +105,6 @@
     </style>
 </head>
 
-@include('auth.login')
-@include('auth.register')
-
 <body class="font-poppins bg-gray-100">
 
 <!-- Header -->
@@ -234,11 +231,18 @@
 <div class="container mx-auto p-6 bg-white rounded-lg shadow-md md:px-14 mt-14">
     <h2 class="text-2xl font-bold mb-4 text-[#5F7E78]">Profil Saya</h2>
 
-    @if (session('success'))
+    @if (session('changeSuccess'))
         <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
-            {{ session('success') }}
+            {{ session('changeSuccess') }}
         </div>
     @endif
+
+    @if ($errors->any())
+        <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
 
     <!-- Informasi Pengguna -->
     <form action="{{ route('profile.update') }}" method="POST">
@@ -265,9 +269,20 @@
         </div>    
 
         <div class="mb-4">
-            <label for="passwordChange" class="block text-gray-700 font-bold mb-2">Ganti Kata Sandi:</label>
+            <label for="whatsapp_number" class="block text-gray-700 font-bold mb-2">Nomor WhatsApp:</label>
+            <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ $user->whatsapp_number }}"
+                   placeholder="Masukkan nomor WhatsApp Anda '6281234567890' (Opsional)"pattern="62[0-9]{9,13}" 
+                   class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
+            <small class="text-gray-500 flex items-center gap-1">
+                <i class="fas fa-info-circle text-red-500"></i>
+                Kosongkan jika ingin notifikasi dikirim ke email saja.
+            </small>
+        </div>
+        
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-bold mb-2">Ganti Kata Sandi:</label>
             <div class="relative">
-                <input type="password" name="passwordChange" id="passwordChange" placeholder="Kosongkan jika tidak ingin mengganti kata sandi"
+                <input type="password" name="password" id="password" placeholder="Kosongkan jika tidak ingin mengganti kata sandi"
                     class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
                 <button type="button" id="togglePasswords" class="absolute right-3 top-3 text-gray-500 focus:outline-none">
                     <i class="fas fa-eye-slash"></i>
@@ -292,7 +307,7 @@
 
         <!-- Tombol Simpan Perubahan -->
         <div class="flex gap-4">
-            <button id="saveChanges" class="bg-[#5F7E78] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[#4e6863] transition duration-300">
+            <button id="simpanPerubahan" class="bg-[#5F7E78] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[#4e6863] transition duration-300">
                 Simpan Perubahan
             </button>
         </div>
@@ -311,7 +326,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const passwordInput = document.getElementById("passwordChange");
+        const passwordInput = document.getElementById("password");
         const requirements = document.getElementById("passwordRequirement");
         const minLength = document.getElementById("panjang");
         const uppercase = document.getElementById("hurufBesar");
@@ -360,7 +375,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Login Password Show/Hide Toggle
         const togglePassword = document.getElementById('togglePasswords');
-        const password = document.getElementById('passwordChange');
+        const password = document.getElementById('password');
 
         if (togglePassword) {
             togglePassword.addEventListener('click', function () {
@@ -394,33 +409,6 @@
         } else {
             header.style.backgroundColor = 'rgba(255, 255, 255, 1)';
         }
-    });
-
-    // JavaScript to control Login and Register Modals
-    document.getElementById('loginButton').addEventListener('click', function() {
-        document.getElementById('loginModal').classList.remove('hidden');
-    });
-
-    document.getElementById('registerButton').addEventListener('click', function() {
-        document.getElementById('registerModal').classList.remove('hidden');
-    });
-
-    document.getElementById('tryNowButton').addEventListener('click', function() {
-        document.getElementById('registerModal').classList.remove('hidden');
-    });
-
-    document.getElementById('closeLogin').addEventListener('click', function() {
-        document.getElementById('loginModal').classList.add('hidden');
-    });
-
-    document.getElementById('closeRegister').addEventListener('click', function() {
-        document.getElementById('registerModal').classList.add('hidden');
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(session('registrationSuccess'))
-            document.getElementById('loginModal').classList.remove('hidden');
-        @endif
     });
 </script>
 </body>

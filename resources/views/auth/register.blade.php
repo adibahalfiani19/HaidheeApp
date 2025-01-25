@@ -73,7 +73,7 @@
     </div>
 </div>
 
-@if (session('registrationSuccess'))
+@if (session('registrationSuccess')) 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             alert("{{ session('alertMessage') }}");

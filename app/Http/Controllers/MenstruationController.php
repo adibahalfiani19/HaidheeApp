@@ -10,6 +10,7 @@ use App\Mail\QadaNotification;
 use App\Mail\QadaNotificationMail;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Helpers\FonnteHelper;
 
 class MenstruationController extends Controller
 {
@@ -167,16 +168,44 @@ class MenstruationController extends Controller
             $qadaSalat[] = ucfirst($menstruation->prayer_end);
         }
 
-        // Kirim email jika ada salat yang perlu diqada
         if (!empty($qadaSalat)) {
-            $user = $menstruation->user; // Pastikan relasi user ada
-            Mail::to($user->email)->send(new QadaNotificationMail(
-                $user->name,
-                $menstruation->start_date,
-                $menstruation->end_date,
-                $qadaSalat
-            ));
+            $user = $menstruation->user;
+            // Format pesan
+            $message = "Assalamualaikum, Kak {$user->name}!\n\n" .
+                    "Terima kasih sudah menggunakan *Haidhee* untuk mencatat menstruasimu.\n\n" .
+                    "Masih ada salat yang belum dikerjakan, yaitu:\n";
+
+            // Tambahkan daftar salat dengan format langsung di dalam pesan
+            foreach ($qadaSalat as $salat) {
+                $message .= "• *Salat {$salat}*\n";
+            }
+
+            $message .= "\nJangan lupa untuk mengqada salatnya ya, Kak. Jika sudah diqada, pastikan untuk melakukan checklist atau pencatatan ulang di aplikasi Haidhee.\n" .
+                        "Buka aplikasi Haidhee di sini: \nhttps://haidhee.com\n\n" .
+                        "Salam hangat,\nAdmin Haidhee :)";
+    
+            if ($user->whatsapp_number) {
+                FonnteHelper::sendWhatsAppMessage($user->whatsapp_number, $message);
+            } else {
+                Mail::to($user->email)->send(new QadaNotificationMail(
+                    $user->name,
+                    $menstruation->start_date,
+                    $menstruation->end_date,
+                    $qadaSalat
+                ));
+            }
         }
+    
+        // // Kirim email jika ada salat yang perlu diqada
+        // if (!empty($qadaSalat)) {
+        //     $user = $menstruation->user; // Pastikan relasi user ada
+        //     Mail::to($user->email)->send(new QadaNotificationMail(
+        //         $user->name,
+        //         $menstruation->start_date,
+        //         $menstruation->end_date,
+        //         $qadaSalat
+        //     ));
+        // }
 
         return response()->json(['message' => 'Data berhasil diperbarui'], 200);
     }   
