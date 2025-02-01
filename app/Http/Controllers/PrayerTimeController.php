@@ -27,7 +27,7 @@ class PrayerTimeController extends Controller
         $prayerResponse = Http::get('https://api.aladhan.com/v1/timings', [
             'latitude' => $latitude,
             'longitude' => $longitude,
-            'method' => 2 // Muslim World League
+            'method' => 20 // KEMENAG Indonesia
         ]);
 
         if ($prayerResponse->successful()) {
