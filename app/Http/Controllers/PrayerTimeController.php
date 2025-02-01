@@ -8,19 +8,29 @@ class PrayerTimeController extends Controller
 {    
     public function getPrayerTimes(Request $request)
     {
-        // Ambil lokasi pengguna berdasarkan IP
-        $ipResponse = Http::get('http://ip-api.com/json/');
-        if (!$ipResponse->successful()) {
-            return response()->json(['error' => 'Gagal mendapatkan lokasi'], 500);
-        }
+        // Ambil alamat IP pengguna
+        $userIp = $request->ip();
 
-        $location = $ipResponse->json();
-        $latitude = $location['lat'] ?? null;
-        $longitude = $location['lon'] ?? null;
-        $region = $location['regionName'] . ', ' . $location['country'];
-
-        if (!$latitude || !$longitude) {
-            return response()->json(['error' => 'Gagal mendapatkan koordinat'], 500);
+        // Periksa apakah alamat IP berhasil diperoleh
+        if (!$userIp) {
+            // Jika tidak, gunakan koordinat default untuk Jakarta
+            $latitude = -6.2088;
+            $longitude = 106.8456;
+            $region = 'Jakarta, Indonesia';
+        } else {
+            // Ambil lokasi pengguna berdasarkan alamat IP
+            $ipResponse = Http::get("http://ip-api.com/json/{$userIp}");
+            if ($ipResponse->successful()) {
+                $location = $ipResponse->json();
+                $latitude = $location['lat'] ?? -6.2088;
+                $longitude = $location['lon'] ?? 106.8456;
+                $region = ($location['regionName'] ?? 'Jakarta') . ', ' . ($location['country'] ?? 'Indonesia');
+            } else {
+                // Jika permintaan ke IP-API gagal, gunakan koordinat default untuk Jakarta
+                $latitude = -6.2088;
+                $longitude = 106.8456;
+                $region = 'Jakarta, Indonesia';
+            }
         }
 
         // Ambil waktu salat berdasarkan lokasi
@@ -61,7 +71,7 @@ class PrayerTimeController extends Controller
         }
 
         return [
-            'name' => $nextPrayer ?? 'Subuh Besok',
+            'name' => $nextPrayer,
             'remainingTime' => $remainingTime
         ];
     }
