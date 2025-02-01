@@ -32,7 +32,7 @@ class QadaNotificationMail extends Mailable
                         'startDate' => $this->startDate,
                         'endDate' => $this->endDate,
                         'qadaSalat' => $this->qadaSalat,
-                        'appLink' => 'https://haidhee.com',
+                        'appLink' => 'https://haidhee.com/',
                     ]);
     }
 }
