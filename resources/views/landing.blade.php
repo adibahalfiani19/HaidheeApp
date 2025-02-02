@@ -341,9 +341,19 @@
                 const prayerTimes = data.prayerTimes;
                 const prayerContainer = document.getElementById('prayer-times');
     
+                // Pemetaan nama sholat ke bahasa Indonesia
+                const prayerNamesMap = {
+                    Fajr: 'Subuh',
+                    Sunrise: 'Terbit',
+                    Dhuhr: 'Zuhur',
+                    Asr: 'Ashar',
+                    Maghrib: 'Maghrib',
+                    Isha: 'Isya'
+                };
+                
                 const selectedPrayers = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
                 const filteredPrayers = selectedPrayers.map(prayer => ({
-                    name: prayer,
+                    name: prayerNamesMap[prayer],
                     time: prayerTimes[prayer],
                 }));
     
@@ -364,12 +374,12 @@
                     const [hour, minute] = prayer.time.split(':').map(Number);
                     const prayerTime = new Date();
                     prayerTime.setHours(hour, minute, 0, 0);
-                    console.log(`Checking ${prayer.name}: PrayerTime=${prayerTime}, Now=${now}, IsNext=${prayerTime > now}`);
+                    // console.log(`Checking ${prayer.name}: PrayerTime=${prayerTime}, Now=${now}, IsNext=${prayerTime > now}`);
                     return prayerTime > now;
                 });
     
                 if (nextPrayer) {
-                    console.log("Next Prayer Found:", nextPrayer);
+                    // console.log("Next Prayer Found:", nextPrayer);
                     document.getElementById('next-prayer').textContent = nextPrayer.name;
     
                     // Hitung waktu tersisa untuk countdown
@@ -415,8 +425,7 @@
             }, 1000);
         }
     });
-    
-    </script>
+</script>
 
 <script>
     // JavaScript to control the sidebar

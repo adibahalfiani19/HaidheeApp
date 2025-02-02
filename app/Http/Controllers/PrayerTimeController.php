@@ -24,7 +24,7 @@ class PrayerTimeController extends Controller
                 $location = $ipResponse->json();
                 $latitude = $location['lat'] ?? -6.2088;
                 $longitude = $location['lon'] ?? 106.8456;
-                $region = ($location['regionName'] ?? 'Jakarta') . ', ' . ($location['country'] ?? 'Indonesia');
+                $region = ($location['city'] ?? 'Jakarta') . ', ' . ($location['regionName'] ?? 'Indonesia');
             } else {
                 // Jika permintaan ke IP-API gagal, gunakan koordinat default untuk Jakarta
                 $latitude = -6.2088;

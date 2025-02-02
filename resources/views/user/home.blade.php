@@ -496,9 +496,19 @@ document.addEventListener("DOMContentLoaded", function () {
             const prayerTimes = data.prayerTimes;
             const prayerContainer = document.getElementById('prayer-times');
 
+            // Pemetaan nama sholat ke bahasa Indonesia
+           const prayerNamesMap = {
+                    Fajr: 'Subuh',
+                    Sunrise: 'Terbit',
+                    Dhuhr: 'Zuhur',
+                    Asr: 'Ashar',
+                    Maghrib: 'Maghrib',
+                    Isha: 'Isya'
+            }; 
+            
             const selectedPrayers = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             const filteredPrayers = selectedPrayers.map(prayer => ({
-                name: prayer,
+                name: prayerNamesMap[prayer],
                 time: prayerTimes[prayer],
             }));
 
