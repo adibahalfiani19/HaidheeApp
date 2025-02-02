@@ -103,6 +103,41 @@
         #userDropdown .border-b {
             border-bottom: 1px solid #e5e7eb;
         }
+
+        @media (max-width: 768px) {
+            .profilecontainer {
+                max-width: 90%;
+                padding: 1rem;
+            }
+            .profilecontainer h2 {
+                font-size: 1.5rem; /* Mengecilkan ukuran judul */
+            }
+            .profilecontainer label {
+                font-size: 0.9rem; /* Mengecilkan label */
+            }
+            .profilecontainer input, 
+            .profilecontainer button, 
+            .profilecontainer small {
+                font-size: 0.85rem; /* Mengecilkan input, tombol, dan teks kecil */
+            }
+        }
+        @media (max-width: 680px) {
+            .profilecontainer {
+                max-width: 90%;
+                padding: 1rem;
+            }
+            .profilecontainer h2 {
+                font-size: 1.3rem; /* Judul lebih kecil */
+            }
+            .profilecontainer label {
+                font-size: 0.8rem; /* Label lebih kecil */
+            }
+            .profilecontainer input, 
+            .profilecontainer button, 
+            .profilecontainer small {
+                font-size: 0.75rem; /* Input, tombol, dan teks kecil lebih kecil */
+            }
+        }
     </style>
 </head>
 
@@ -229,7 +264,7 @@
 </div>
 
 <!-- Main Content -->
-<div class="container mx-auto p-6 bg-white rounded-lg shadow-md md:px-14 mt-14">
+<div class="profilecontainer mx-auto p-6 bg-white rounded-lg shadow-md md:px-14 mt-10 mb-10 md:mx-10 max-w-4xl">
     <h2 class="text-2xl font-bold mb-4 text-[#5F7E78]">Profil Saya</h2>
 
     @if (session('changeSuccess'))
@@ -272,7 +307,7 @@
         <div class="mb-4">
             <label for="whatsapp_number" class="block text-gray-700 font-bold mb-2">Nomor WhatsApp:</label>
             <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ $user->whatsapp_number }}"
-                   placeholder="Masukkan nomor WhatsApp Anda '6281234567890' (Opsional)"pattern="62[0-9]{9,13}" 
+                   placeholder="Masukkan nomor WhatsApp Anda '6281234567890'"pattern="62[0-9]{9,13}" 
                    class="w-full p-3 border rounded-xl bg-[#F1EAD7] focus:outline-none focus:ring-2 focus:ring-[#5F7E78]">
             <small class="text-gray-500 flex items-center gap-1">
                 <i class="fas fa-info-circle text-red-500"></i>

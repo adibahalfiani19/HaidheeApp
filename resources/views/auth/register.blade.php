@@ -1,4 +1,52 @@
 <!-- Register Modal Popup -->
+<style>
+    /* Default Modal Register */
+    #registerModal > div {
+        width: 36rem; /* Lebar normal untuk layar besar */
+        padding: 2rem; /* Padding default */
+        font-size: 1rem; /* Font size default */
+    }
+    
+    /* Untuk layar sangat kecil (max-width: 480px) */
+    @media (max-width: 640px) {
+        #registerModal > div {
+            width: 90%; /* Lebar modal lebih kecil */
+            max-width: 20rem; /* Batas maksimal lebih kecil */
+            padding: 1.5rem; /* Padding lebih kecil */
+            font-size: 0.875rem; /* Ukuran font lebih kecil */
+        }
+    
+        #registerModal h2 {
+            font-size: 1.5rem; /* Header lebih kecil */
+        }
+    
+        #registerModal h3 {
+            font-size: 1.25rem; /* Sub-header lebih kecil */
+        }
+    
+        #registerModal p,
+        #registerModal label {
+            font-size: 0.875rem; /* Ukuran teks lebih kecil */
+        }
+    
+        #registerModal input,
+        #registerModal button {
+            padding: 0.75rem; /* Padding input dan button lebih kecil */
+        }
+    
+        #registerModal button {
+            font-size: 0.875rem; /* Ukuran font button lebih kecil */
+        }
+        
+        /* Responsif untuk layar kecil */
+        #toggleRegisterPassword {
+            right: 0.75rem; /* Kurangi jarak untuk layar kecil */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+</style>
+
 <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1100]">
     <div class="bg-white rounded-3xl shadow-lg w-[36rem] p-8 relative">
         <!-- Tombol Tutup -->

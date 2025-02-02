@@ -236,6 +236,11 @@
             margin-right: 10px;
         }
 
+        @media (max-width: 680px) {
+            .statistik {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 
@@ -355,7 +360,7 @@
     <div class="max-w-4xl ml-0 grid grid-cols-3 gap-4 mb-8">
         <!-- Durasi Haid -->
         <div class="bg-[#B8D6D0] text-center py-4 rounded-lg shadow-md">
-            <h3 class="text-lg font-bold text-gray-700 mb-1">Durasi Haid</h3>
+            <h3 class="statistik text-lg font-bold text-gray-700 mb-1">Durasi Haid</h3>
             <p class="text-sm text-gray-500 mb-2">(Rata-rata)</p>
             <p class="text-3xl font-bold text-[#5F7E78]">{{ $averageHaid ?? '-' }}</p>
             <p class="text-sm text-gray-500">Hari</p>
@@ -363,7 +368,7 @@
 
         <!-- Masa Suci -->
         <div class="bg-[#FBE4D5] text-center py-4 rounded-lg shadow-md">
-            <h3 class="text-lg font-bold text-gray-700 mb-1">Masa Suci</h3>
+            <h3 class="statistik text-lg font-bold text-gray-700 mb-1">Masa Suci</h3>
             <p class="text-sm text-gray-500 mb-2">(Rata-rata)</p>
             <p class="text-3xl font-bold text-[#D4BE83]">{{ $averageClean ?? '-' }}</p>
             <p class="text-sm text-gray-500">Hari</p>
@@ -371,7 +376,7 @@
 
         <!-- Siklus -->
         <div class="bg-[#EADCDC] text-center py-4 rounded-lg shadow-md">
-            <h3 class="text-lg font-bold text-gray-700 mb-1">Siklus</h3>
+            <h3 class="statistik text-lg font-bold text-gray-700 mb-1">Siklus</h3>
             <p class="text-sm text-gray-500 mb-2">(Rata-rata)</p>
             <p class="text-3xl font-bold text-[#D76A6A]">{{ $averageCycle ?? '-' }}</p>
             <p class="text-sm text-gray-500">Hari</p>

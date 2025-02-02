@@ -139,7 +139,8 @@
             }
 
             .prayer-times {
-                grid-template-columns: 1fr; /* 1 kolom untuk layar kecil */
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk layar kecil */
+                gap: 0.25rem;
             }
         }
     </style>

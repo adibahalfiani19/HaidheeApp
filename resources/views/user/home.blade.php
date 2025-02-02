@@ -68,7 +68,7 @@
             width: 16rem; /* 64px * 4 = 256px */
             height: 100%;
             background-color: #ffffff !important; /* Solid background */
-            z-index: 1001; /* Ensures sidebar appears above header */
+            z-index: 1051; /* Ensures sidebar appears above header */
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
@@ -215,7 +215,7 @@
             }
 
             .prayer-times {
-                grid-template-columns: repeat(3, 1fr); /* 2 kolom untuk layar kecil */
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk layar kecil */
                 gap: 0.5rem;
             }
         }
@@ -229,7 +229,15 @@
             }
 
             .prayer-times {
-                grid-template-columns: 1fr; /* 1 kolom untuk layar kecil */
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk layar kecil */
+                gap: 0.25rem;
+            }
+
+            .header-with-notification {
+                top: 85px; /* Geser ke bawah 85px untuk memberi ruang pada notifikasi */
+            }
+            .body-with-notification {
+                padding-top: 135px; /* Header + Notifikasi */
             }
         }
     </style>

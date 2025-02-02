@@ -139,6 +139,7 @@
             color: #333;
             line-height: 1.8;
             margin-bottom: 1rem;
+            text-align: justify;
         }
         ul {
             margin-left: 1.5rem;
