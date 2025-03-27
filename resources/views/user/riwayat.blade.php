@@ -359,10 +359,10 @@
     <h1 class="text-2xl font-bold mb-4">Riwayat Menstruasi</h1>
     <div class="max-w-4xl ml-0 grid grid-cols-3 gap-4 mb-8">
         <!-- Durasi Haid -->
-        <div class="bg-[#B8D6D0] text-center py-4 rounded-lg shadow-md">
+        <div class="bg-[#EADCDC] text-center py-4 rounded-lg shadow-md">
             <h3 class="statistik text-lg font-bold text-gray-700 mb-1">Durasi Haid</h3>
             <p class="text-sm text-gray-500 mb-2">(Rata-rata)</p>
-            <p class="text-3xl font-bold text-[#5F7E78]">{{ $averageHaid ?? '-' }}</p>
+            <p class="text-3xl font-bold text-[#D76A6A]">{{ $averageHaid ?? '-' }}</p>
             <p class="text-sm text-gray-500">Hari</p>
         </div>
 
@@ -375,11 +375,29 @@
         </div>
 
         <!-- Siklus -->
-        <div class="bg-[#EADCDC] text-center py-4 rounded-lg shadow-md">
+        <div class="bg-[#B8D6D0] text-center py-4 rounded-lg shadow-md">
             <h3 class="statistik text-lg font-bold text-gray-700 mb-1">Siklus</h3>
             <p class="text-sm text-gray-500 mb-2">(Rata-rata)</p>
-            <p class="text-3xl font-bold text-[#D76A6A]">{{ $averageCycle ?? '-' }}</p>
+            <p class="text-3xl font-bold text-[#5F7E78]">{{ $averageCycle ?? '-' }}</p>
             <p class="text-sm text-gray-500">Hari</p>
+        </div>
+    </div>
+
+    <!-- Tambah Pencatatan -->
+    <div class="mb-6">
+        <!-- Desktop -->
+        <div class="hidden lg:flex justify-start">
+            <a href="{{ route('calendar.create') }}"
+               class="bg-[#5F7E78] text-white font-bold px-4 py-3 rounded-xl shadow hover:bg-[#4e6863] transition">
+                <i class="fas fa-plus mr-2"></i>Tambah Data Menstruasi
+            </a>
+        </div>
+        <!-- Mobile -->
+        <div class="block lg:hidden">
+            <a href="{{ route('calendar.create') }}"
+               class="w-full text-center bg-[#5F7E78] text-white font-semibold px-4 py-3 rounded-xl shadow hover:bg-[#4e6863] transition">
+                <i class="fas fa-plus mr-2"></i>Tambah Data Menstruasi
+            </a>
         </div>
     </div>
 
@@ -436,20 +454,22 @@
                             {{ $qadaSalat }}
                         </span>
                     </td>
-                    <td class="py-3 px-4 flex justify-center space-x-2">
-                        <button class="text-blue-500 hover:text-blue-700" onclick="showDetailModal({{ $data->id }})" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <a href="{{ route('calendar.edit', ['id' => $data->id]) }}" class="text-yellow-500 hover:text-yellow-700" title="Edit Data">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('calendar.destroy', ['id' => $data->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700" title="Hapus Data">
-                                <i class="fas fa-trash"></i>
+                    <td class="py-3 px-4">
+                        <div class="flex justify-center items-center space-x-2 h-full">
+                            <button class="text-blue-500 hover:text-blue-700 mr-1" onclick="showDetailModal({{ $data->id }})" title="Lihat Detail">
+                                <i class="fas fa-eye text-lg"></i>
                             </button>
-                        </form>
+                            <a href="{{ route('calendar.edit', ['id' => $data->id]) }}" class="text-yellow-500 hover:text-yellow-700 mr-1" title="Edit Data">
+                                <i class="fas fa-edit text-lg"></i>
+                            </a>
+                            <form action="{{ route('calendar.destroy', ['id' => $data->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700 mr-1" title="Hapus Data">
+                                    <i class="fas fa-trash text-lg"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -497,22 +517,26 @@
                 </div>
                 <div>
                     <span class="label">Qada Salat</span>
-                    <span class="value font-bold">{{ (!empty($data->prayer_start) || !empty($data->prayer_end)) ? 'Ada' : 'Tidak' }}</span>
+                    @if(!empty($data->prayer_start) || !empty($data->prayer_end))
+                        <span class="value font-bold" style="color: red;">Ada</span>
+                    @else
+                        <span class="value font-bold">Tidak</span>
+                    @endif
                 </div>
                 <div>
                     <span class="label">Aksi</span>
                     <div class="actions">
-                        <button class="text-blue-500 hover:text-blue-700" onclick="showDetailModal({{ $data->id }})" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
+                        <button class="text-blue-500 hover:text-blue-700 mr-1" onclick="showDetailModal({{ $data->id }})" title="Lihat Detail">
+                            <i class="fas fa-eye text-lg"></i>
                         </button>
-                        <a href="{{ route('calendar.edit', ['id' => $data->id]) }}" class="text-yellow-500 hover:text-yellow-700" title="Edit Data">
-                            <i class="fas fa-edit"></i>
+                        <a href="{{ route('calendar.edit', ['id' => $data->id]) }}" class="text-yellow-500 hover:text-yellow-700 mr-1" title="Edit Data">
+                            <i class="fas fa-edit text-lg"></i>
                         </a>
                         <form action="{{ route('calendar.destroy', ['id' => $data->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700" title="Hapus Data">
-                                <i class="fas fa-trash"></i>
+                            <button type="submit" class="text-red-500 hover:text-red-700 mr-1" title="Hapus Data">
+                                <i class="fas fa-trash text-lg"></i>
                             </button>
                         </form>
                     </div>

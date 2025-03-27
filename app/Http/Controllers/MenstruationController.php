@@ -226,7 +226,7 @@ class MenstruationController extends Controller
     {
         $startDateTime = new \DateTime("$startDate $startTime");
     
-        // Ambil haid terakhir dari user ini secara menyeluruh
+        // Ambil haid terakhir dari user
         $lastMenstruation = Menstruation::where('user_id', Auth::id())
             ->whereNotNull('end_date')
             ->orderBy('end_date', 'desc')
@@ -249,7 +249,7 @@ class MenstruationController extends Controller
     
                 if ($endDateTime <= $lastCycleEnd) {
                     $status = 'Haid';
-                    return $status; // Langsung return karena status pasti Haid
+                    return $status; 
                 }
             }
     
@@ -275,9 +275,9 @@ class MenstruationController extends Controller
             $endDateTime = new \DateTime("$endDate $endTime");
             $durationInHours = ($startDateTime->diff($endDateTime)->days * 24) + $startDateTime->diff($endDateTime)->h;
     
-            // Tambahkan pengecekan jika total durasi lebih dari 15 hari harus diidentifikasi sebagai campuran
+            // Tambahan pengecekan jika total durasi lebih dari 15 hari
             if ($durationInHours > (15 * 24)) {
-                // Cek apakah awal darah memenuhi minimal masa suci
+                // Pengecekan apakah hari pertama menstruasi memenuhi minimal masa suci
                 if ($intervalInHours >= (15 * 24)) {
                     // Jika sudah melewati masa suci, bagian awal darah adalah haid dan sisanya istihadhah
                     $status = 'Campuran (Haid dan Istihadhah)';
@@ -328,7 +328,6 @@ class MenstruationController extends Controller
                 }
             }
         }
-    
         return $status;
     }
 
